@@ -4535,8 +4535,7 @@ var __webpack_exports__ = {};
 (() => {
 const WebSocket = __nccwpck_require__(457);
 
-// WebSocket connection URL
-const url = 'ws://192.168.4.1/ws'; // Change this to your WebSocket server URL
+const url = 'ws://192.168.4.1/ws'; 
 
 async function start() {
     try {
@@ -4550,26 +4549,21 @@ async function start() {
     }
 }
 
-// Create a WebSocket client instance
 const connectToServer = () => {
     try {
-
         const client = new WebSocket.client();
 
-        // Handle connection open event
         client.on('connect', (connection) => {
             console.log('Client connected to WebSocket server.');
 
-            // Handle incoming messages from the server
             connection.on('message', (message) => {
                 if (message.type === 'utf8') {
-                    console.log('Received message:', message.utf8Data);
+                    console.log('Received message:', JSON.parse(message.utf8Data));
                 }
             });
 
         });
 
-        // Handle connection close event
         client.on('connectFailed', (error) => {
             console.error('Connection failed:', error.toString());
         });
@@ -4582,17 +4576,13 @@ const connectToServer = () => {
 
 process.on('uncaughtException', (error) => {
     console.error('Uncaught exception:', error);
-    // Optionally, do something here like log the error or attempt to reconnect
 });
 
 process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled rejection at:', promise, 'reason:', reason);
-    // Optionally, do something here like log the rejection or attempt to reconnect
 });
 
 start();
-// Connect to the WebSocket server
-
 })();
 
 module.exports = __webpack_exports__;
