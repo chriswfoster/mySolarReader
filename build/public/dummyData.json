@@ -1,0 +1,19 @@
+{
+  "voltage": 14.8,
+  "charge_level": "80%",
+  "solar_panel_voltage": "80",
+  "solar_panel_amps": "40",
+  "solar_panel_watts": "320",
+  "battery_charging_watts": "320",
+  "max_charging_amps_today": "100",
+  "max_discharging_amps_today": "15",
+  "max_charge_watts_today": "500",
+  "max_discharge_watts_today": "400",
+  "charge_amphours_today": "200",
+  "discharge_amphours_today": "100",
+  "charge_watthours_today": "500",
+  "discharge_watthours_today": "400",
+  "battery_temperature": "75",
+  "controller_temperature": 79,
+  "shop_time": "2024-04-12T17:49:57.790Z"
+}

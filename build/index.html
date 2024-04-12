@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solar Reader</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app" class="flexRow">
+      <button id="leftButton" class="buttonSize">&lt;</button>
+      <div className="flexCol">
+        <div class="h-50-P fontSize">
+          <span id="titleLine">Retrieving Data...</span>
+        </div>
+        <div class="h-50-P fsInfo">
+          <span id="dataLine">0</span>
+          <button id="redButton" class="redDot"></button>
+        </div>
+      </div>
+      <button id="rightButton" class="buttonSize">&gt;</button>
+    </div>
+
+    <script>
+      const changeSpeed = 5000;
+      let dummyData = {};
+      let listOfKeyNames = [];
+      let rotatedViewIndex = 0;
+      let preferredViewIndex = null;
+      let paused = false;
+      let timer = null;
+      const pauseTimer = () => {
+        paused = true;
+        timer = setTimeout(() => {
+          paused = false;
+        }, 10000);
+      };
+
+      const getDummyData = async () => {
+        const data = new Promise(async (resolve, reject) => {
+          await fetch("./dummyData.json")
+            .then((response) => response.json())
+            .then((data) => {
+              if (!listOfKeyNames.length) {
+                listOfKeyNames = Object.keys(data);
+              }
+
+              // format data coming from the server
+              const date = new Date(data.shop_time);
+              const hour = date.getHours();
+              const minute = date.getMinutes();
+              const formattedHour = hour < 10 ? "0" + hour : hour;
+              const formattedMinute = minute < 10 ? "0" + minute : minute;
+              const timeString = `${formattedHour}:${formattedMinute}`;
+              resolve({ ...data, shop_time: timeString });
+            })
+            .catch((error) => console.error("Error fetching JSON:", error));
+        });
+
+        return data;
+      };
+
+
+
+      const leftButton = document.getElementById("leftButton");
+      const rightButton = document.getElementById("rightButton");
+      const redbutton = document.getElementById("redButton");
+
+      leftButton.addEventListener("click", () => {
+        console.log("left clicked");
+        if (rotatedViewIndex === 0) {
+          rotatedViewIndex = listOfKeyNames.length - 1;
+        } else {
+          rotatedViewIndex--;
+        }
+        pauseTimer();
+        updateUI();
+      });
+
+      rightButton.addEventListener("click", () => {
+        console.log("right clicked");
+        if (rotatedViewIndex === listOfKeyNames.length - 1) {
+          rotatedViewIndex = 0;
+        } else {
+          rotatedViewIndex++;
+        }
+        pauseTimer();
+        updateUI();
+      });
+
+      redButton.addEventListener("click", () => {
+        if (rotatedViewIndex === preferredViewIndex) {
+          preferredViewIndex = null;
+        } else {
+          preferredViewIndex = rotatedViewIndex;
+        }
+        updateUI();
+      });
+
+      const formatTitle = (str) => {
+        const splitTitle = str
+          .split("_")
+          .map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+          })
+          .join(" ");
+        return splitTitle;
+      };
+
+      const refreshData = async () => {
+        //TODO: might get rid of this later for sockets
+        dummyData = await getDummyData();
+        updateUI();
+      };
+
+      const updateUI = async () => {
+        // Title and Data UI handler
+        const titleElement = document.getElementById("titleLine");
+        const dataElement = document.getElementById("dataLine");
+        let currentProperty = listOfKeyNames[rotatedViewIndex] || "battery_temperature";
+        titleElement.innerText = formatTitle(currentProperty);
+        dataElement.innerText = dummyData[currentProperty];
+
+        // Red Button / Preferred View UI handler:
+        const button = document.getElementById("redButton");
+        const condition = true;
+        if (rotatedViewIndex === preferredViewIndex) {
+          button.style.backgroundColor = "red";
+        } else {
+          button.style.backgroundColor = "grey";
+        }
+      };
+
+      const rotatingSetter = async () => {
+        // this keeps the carrousel rotating
+        while (true) { // run forever
+          // This is the rotating timer/speed
+          await sleep(changeSpeed);
+          setActiveView();
+        }
+      };
+
+      const setActiveView = async () => {
+        if (!paused && preferredViewIndex === null) {
+          if (rotatedViewIndex === listOfKeyNames.length - 1) {
+            rotatedViewIndex = 0;
+          } else {
+            rotatedViewIndex++;
+          }
+          updateUI();
+        }
+      };
+
+      const sleep = (ms) => {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      };
+
+      rotatingSetter();
+      setInterval(() => {
+        //  replace this with a socket probably
+        refreshData();
+      }, 1000);
+    </script>
+  </body>
+</html>
