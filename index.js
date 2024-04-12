@@ -1,6 +1,22 @@
 const WebSocket = require('websocket');
+const cors = require('cors');
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
 
 const url = 'ws://192.168.4.1/ws'; 
+
+const app = express();
+app.use(cors())
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Route for serving the index.html file
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+
+
 
 async function start() {
     try {
@@ -48,3 +64,8 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 start();
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
