@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 
 async function start() {
     try {
-        console.log("Starting server connection...");
+        console.log(new Date().toISOString() + "Starting server connection...");
         connectToServer();
     }
     catch (e) {
@@ -67,5 +67,5 @@ start();
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`${new Date().toISOString()}Server is running on port ${PORT}`);
 });
