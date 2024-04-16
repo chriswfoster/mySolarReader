@@ -54,8 +54,8 @@ const connectToServer = () => {
 
             connection.on('message', (message) => {
                 if (message.type === 'utf8') {
-                    console.log(new Date().toISOString() + 'Received message:', JSON.parse({...message.utf8Data}));
-                    solarData = JSON.parse({...message.utf8Data});
+                    console.log(new Date().toISOString() + 'Received message:', JSON.parse(message.utf8Data));
+                    solarData = JSON.parse(message.utf8Data);
                     solarData.shop_time = getTime();
                 }
             });
