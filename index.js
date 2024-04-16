@@ -46,7 +46,7 @@ const connectToServer = () => {
         });
 
         client.on('connectFailed', (error) => {
-            console.error('Connection failed:', error.toString());
+            console.error(new Date().toISOString() + 'Connection failed:', error.toString());
         });
         client.connect(url);
     }
