@@ -25840,7 +25840,7 @@ const connectToServer = () => {
 
             connection.on('message', (message) => {
                 if (message.type === 'utf8') {
-                    console.log('Received message:', JSON.parse({...message.utf8Data, shop_time: getTime()}));
+                    console.log(new Date().toISOString() + 'Received message:', JSON.parse({...message.utf8Data}));
                     solarData = JSON.parse({...message.utf8Data});
                     solarData.shop_time = getTime();
                 }
