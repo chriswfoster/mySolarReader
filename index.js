@@ -39,7 +39,7 @@ const connectToServer = () => {
 
             connection.on('message', (message) => {
                 if (message.type === 'utf8') {
-                    console.log('Received message:', JSON.parse(message.utf8Data));
+                    console.log('Received message:', JSON.parse({...message.utf8Data, shop_time: new Date().toISOString()}));
                 }
             });
 
