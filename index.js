@@ -15,8 +15,12 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+app.get('/data', (req, res) => {
+    res.status(200).send(solarData);
+});
 
 
+let solarData = {};
 
 async function start() {
     try {
@@ -30,6 +34,17 @@ async function start() {
     }
 }
 
+const getTime = () => {
+    const date = new Date();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const formattedHour = hour < 10 ? "0" + hour : hour;
+    const formattedMinute = minute < 10 ? "0" + minute : minute;
+    const timeString = `${formattedHour}:${formattedMinute}`;
+
+    return timeString;
+}
+
 const connectToServer = () => {
     try {
         const client = new WebSocket.client();
@@ -39,7 +54,8 @@ const connectToServer = () => {
 
             connection.on('message', (message) => {
                 if (message.type === 'utf8') {
-                    console.log('Received message:', JSON.parse({...message.utf8Data, shop_time: new Date().toISOString()}));
+                    console.log('Received message:', JSON.parse({...message.utf8Data, shop_time: getTime()}));
+                    solarData = JSON.parse({...message.utf8Data, shop_time: getTime()});
                 }
             });
 

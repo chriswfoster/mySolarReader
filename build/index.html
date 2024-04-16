@@ -108,8 +108,9 @@
       };
 
       const refreshData = async () => {
-        //TODO: might get rid of this later for sockets
-        dummyData = await getDummyData();
+        //TODO: might get rid of this later for sockets]
+        const data = await fetch('http://localhost:3000/data')
+        dummyData = data
         updateUI();
       };
 

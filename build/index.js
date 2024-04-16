@@ -25801,12 +25801,16 @@ app.get('/', (req, res) => {
     res.sendFile(__nccwpck_require__.ab + "index.html");
 });
 
+app.get('/data', (req, res) => {
+    res.status(200).send(solarData);
+});
 
 
+let solarData = {};
 
 async function start() {
     try {
-        console.log("Starting server connection...");
+        console.log(new Date().toISOString() + "Starting server connection...");
         connectToServer();
     }
     catch (e) {
@@ -25814,6 +25818,17 @@ async function start() {
         console.log("Restarting connection in 5 seconds...");
         setTimeout(connectToServer, 5000);
     }
+}
+
+const getTime = () => {
+    const date = new Date();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const formattedHour = hour < 10 ? "0" + hour : hour;
+    const formattedMinute = minute < 10 ? "0" + minute : minute;
+    const timeString = `${formattedHour}:${formattedMinute}`;
+
+    return timeString;
 }
 
 const connectToServer = () => {
@@ -25825,14 +25840,15 @@ const connectToServer = () => {
 
             connection.on('message', (message) => {
                 if (message.type === 'utf8') {
-                    console.log('Received message:', JSON.parse(message.utf8Data));
+                    console.log('Received message:', JSON.parse({...message.utf8Data, shop_time: getTime()}));
+                    solarData = JSON.parse({...message.utf8Data, shop_time: getTime()});
                 }
             });
 
         });
 
         client.on('connectFailed', (error) => {
-            console.error('Connection failed:', error.toString());
+            console.error(new Date().toISOString() + 'Connection failed:', error.toString());
         });
         client.connect(url);
     }
@@ -25853,7 +25869,7 @@ start();
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`${new Date().toISOString()}Server is running on port ${PORT}`);
 });
 
 })();
