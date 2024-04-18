@@ -25816,7 +25816,8 @@ async function start() {
     catch (e) {
         console.log('Socket Error: ', e);
         console.log("Restarting connection in 5 seconds...");
-        setTimeout(connectToServer, 5000);
+        // setTimeout(connectToServer, 5000);
+        process.exit(1);
     }
 }
 
@@ -25850,6 +25851,7 @@ const connectToServer = () => {
 
         client.on('connectFailed', (error) => {
             console.error(new Date().toISOString() + 'Connection failed:', error.toString());
+            throw 'Connection failed';
         });
         client.connect(url);
     }
