@@ -25595,6 +25595,7 @@ wsServer.on('request', function (request) {
         console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
         return;
     }
+    
     var connection = request.accept(null, request.origin)
     connection.on('message', function (message) {
         if (message.type === 'utf8') {
@@ -25610,11 +25611,9 @@ wsServer.on('request', function (request) {
             connection.sendBytes(message.binaryData);
         }
     });
-    connection.on('close', function(reasonCode, description) {
-        console.log('Client disconnected:', reasonCode, description);
-        // Perform cleanup or handle reconnection here
-    });
+
 })
+
 
 // async function start() {
 //     try {
