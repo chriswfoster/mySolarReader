@@ -1,19 +1,33 @@
-const WebSocket = require('ws');
+var WebSocketServer = require('websocket').server;
 const cors = require('cors');
 const http = require('http');
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
-const url = 'ws://192.168.4.1/ws'; 
+const url = 'ws://192.168.4.1/ws';
 
 const app = express();
 app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')));
-const server = http.createServer(app);
 
-const wss = new WebSocket.Server({ server });
-// Route for serving the index.html file
+var server = http.createServer(function (request, response) {
+    console.log((new Date()) + ' Received request for ' + request.url);
+    response.writeHead(404);
+    response.end();
+});
+
+
+wsServer = new WebSocketServer({
+    httpServer: server,
+    // You should not use autoAcceptConnections for production
+    // applications, as it defeats all standard cross-origin protection
+    // facilities built into the protocol and the browser.  You should
+    // *always* verify the connection's origin and decide whether or not
+    // to accept it.
+    autoAcceptConnections: false
+});
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
@@ -22,29 +36,61 @@ app.get('/data', (req, res) => {
     res.status(200).send(solarData);
 });
 
-wss.on('connection', function connection(ws) {
 
-        console.log('Client connected to WebSocket client.');
+function originIsAllowed(origin) {
+    // put logic here to detect whether the specified origin is allowed.
+    return true;
+}
 
-        ws.on('message', (message) => {
-            console.log("message received!")
-            if (message.type === 'utf8') {
-                console.log(new Date().toISOString() + 'Received message:', JSON.parse(message.utf8Data));
-                solarData = JSON.parse(message.utf8Data);
-                solarData.shop_time = getTime();
-            } else {
-                console.log(message);
-            }
-        });
+wsServer.on('request', function (request) {
+    console.log("request is happening", request)
+    // console.log(request)
+    if (!originIsAllowed(request.origin)) {
+        // Make sure we only accept requests from an allowed origin
+        request.reject();
+        console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
+        return;
+    }
+    var connection = request.accept(null, request.origin)
+
+    connection.on('message', function (message) {
+        if (message.type === 'utf8') {
+            console.log('Received Message: ', JSON.parse(message.utf8Data));
+            //connection.sendUTF(message.utf8Data); this resend the reseived message, instead of it i will send a custom message. hello from nodejs
+
+            //I dont think I need this
+            // connection.sendUTF("Hello from node.js");
+        }
+        else if (message.type === 'binary') {
+            console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
+            connection.sendBytes(message.binaryData);
+        }
+    });
+})
+
+wsServer.on('connection', function connection(ws) {
+
+    console.log('Client connected to WebSocket client.');
+
+    ws.on('message', (message) => {
+        console.log("message received!")
+        if (message.type === 'utf8') {
+            console.log(new Date().toISOString() + 'Received message:', JSON.parse(message.utf8Data));
+            solarData = JSON.parse(message.utf8Data);
+            solarData.shop_time = getTime();
+        } else {
+            console.log(message);
+        }
+    });
 
     console.log('A new client connected!');
-    
+
     // ws.on('message', function incoming(message) {
     //   console.log('Received: %s', message);
     // });
-  
+
     // ws.send('Hello, client!');
-  });
+});
 
 
 let solarData = {};
