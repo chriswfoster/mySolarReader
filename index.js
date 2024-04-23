@@ -31,6 +31,8 @@ wss.on('connection', function connection(ws) {
                 console.log(new Date().toISOString() + 'Received message:', JSON.parse(message.utf8Data));
                 solarData = JSON.parse(message.utf8Data);
                 solarData.shop_time = getTime();
+            } else {
+                console.log(message);
             }
         });
 
