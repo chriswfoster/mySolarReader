@@ -27,6 +27,7 @@ wss.on('connection', function connection(ws) {
         console.log('Client connected to WebSocket client.');
 
         ws.on('message', (message) => {
+            console.log("message received!")
             if (message.type === 'utf8') {
                 console.log(new Date().toISOString() + 'Received message:', JSON.parse(message.utf8Data));
                 solarData = JSON.parse(message.utf8Data);
