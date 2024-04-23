@@ -57,7 +57,7 @@ wsServer.on('request', function (request) {
         console.log("Message in request: ", message)
         if (message.type === 'utf8') {
             console.log("yeah its utf8")
-            // console.log('Received Message: ', JSON.parse(message.utf8Data));
+            console.log('Received Message: ', message.utf8Data);
             
             //connection.sendUTF(message.utf8Data); this resend the reseived message, instead of it i will send a custom message. hello from nodejs
 
