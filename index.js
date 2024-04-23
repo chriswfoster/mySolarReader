@@ -49,7 +49,7 @@ wsServer.on('request', function (request) {
     connection.on('message', function (message) {
         if (message.type === 'utf8') {
             solarData = JSON.parse(message.utf8Data);
-
+            console.log("MESSAGE RECEIVED :| ")
             //connection.sendUTF(message.utf8Data); this resend the reseived message, instead of it i will send a custom message. hello from nodejs
 
             //I dont think I need this
