@@ -31,6 +31,7 @@ app.get('/data', (req, res) => {
     res.status(200).send(solarData);
 });
 
+const connectedClients = new Set();
 let solarData = {};
 
 function originIsAllowed(origin) {
@@ -44,7 +45,9 @@ wsServer.on('request', function (request) {
         console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
         return;
     }
+    
     var connection = request.accept(null, request.origin)
+    connectedClients.add(connection.remoteAddress);
     connection.on('message', function (message) {
         if (message.type === 'utf8') {
             solarData = JSON.parse(message.utf8Data);
@@ -64,6 +67,17 @@ wsServer.on('request', function (request) {
         // Perform cleanup or handle reconnection here
     });
 })
+
+// Periodic cleanup to remove disconnected client IDs
+setInterval(function() {
+    // Perform cleanup by removing disconnected client IDs
+    // For example, you can remove client IDs that haven't sent a message in a certain period of time
+    // Or you can remove client IDs based on other criteria
+    console.log('Performing periodic cleanup...');
+    console.log('Connected clients before cleanup:', connectedClients);
+    // Implement your cleanup logic here
+    console.log('Connected clients after cleanup:', connectedClients);
+}, 60000); // Cleanup every 1 minute (adjust interval as needed)
 
 // async function start() {
 //     try {
