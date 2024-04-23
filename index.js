@@ -1,5 +1,6 @@
-const WebSocket = require('websocket');
+const WebSocket = require('ws');
 const cors = require('cors');
+const http = require('http');
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -9,7 +10,9 @@ const url = 'ws://192.168.4.1/ws';
 const app = express();
 app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')));
+const server = http.createServer(app);
 
+const wss = new WebSocket.Server({ server });
 // Route for serving the index.html file
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -18,6 +21,27 @@ app.get('/', (req, res) => {
 app.get('/data', (req, res) => {
     res.status(200).send(solarData);
 });
+
+wss.on('connection', function connection(ws) {
+
+        console.log('Client connected to WebSocket client.');
+
+        ws.on('message', (message) => {
+            if (message.type === 'utf8') {
+                console.log(new Date().toISOString() + 'Received message:', JSON.parse(message.utf8Data));
+                solarData = JSON.parse(message.utf8Data);
+                solarData.shop_time = getTime();
+            }
+        });
+
+    console.log('A new client connected!');
+    
+    // ws.on('message', function incoming(message) {
+    //   console.log('Received: %s', message);
+    // });
+  
+    // ws.send('Hello, client!');
+  });
 
 
 let solarData = {};
@@ -82,9 +106,9 @@ process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled rejection at:', promise, 'reason:', reason);
 });
 
-start();
+// start();
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`${new Date().toISOString()}Server is running on port ${PORT}`);
 });
