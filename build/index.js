@@ -25605,8 +25605,11 @@ wsServer.on('request', function (request) {
     var connection = request.accept(null, request.origin)
 
     connection.on('message', function (message) {
+        console.log("Message in request: ", message)
         if (message.type === 'utf8') {
-            console.log('Received Message: ', JSON.parse(message.utf8Data));
+            console.log("yeah its utf8")
+            // console.log('Received Message: ', JSON.parse(message.utf8Data));
+            
             //connection.sendUTF(message.utf8Data); this resend the reseived message, instead of it i will send a custom message. hello from nodejs
 
             //I dont think I need this
@@ -25626,8 +25629,9 @@ wsServer.on('connection', function connection(ws) {
     ws.on('message', (message) => {
         console.log("message received!")
         if (message.type === 'utf8') {
-            console.log(new Date().toISOString() + 'Received message:', JSON.parse(message.utf8Data));
-            solarData = JSON.parse(message.utf8Data);
+            console.log("Message in connectioN: ", message)
+            // console.log(new Date().toISOString() + 'Received message:', JSON.parse(message.utf8Data));
+            // solarData = JSON.parse(message.utf8Data);
             solarData.shop_time = getTime();
         } else {
             console.log(message);
