@@ -13,8 +13,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 var server = http.createServer(function (request, response) {
     console.log((new Date()) + ' Received request for ' + request.url);
-    // response.writeHead(404);
-    // response.end();
+    if (request.url === '/') {
+        const filePath = path.join(__dirname, 'index.html');
+        fs.readFile(filePath, (err, data) => {
+            if (err) {
+                response.writeHead(500, { 'Content-Type': 'text/plain' });
+                response.end('Error loading file');
+            } else {
+                response.writeHead(200, { 'Content-Type': 'text/html' });
+                response.end(data); // End response after sending file content.
+            }
+        });
+    } else {
+        response.writeHead(404, { 'Content-Type': 'text/plain' });
+        response.end('Not Found');
+    }
 });
 
 
