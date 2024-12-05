@@ -110,6 +110,7 @@
       const refreshData = async () => {
         //TODO: might get rid of this later for sockets]
         const data = await fetch('http://solarpi3:3000/data')
+        console.log("Got data: ", data);
         dummyData = data
         updateUI();
       };
@@ -118,7 +119,9 @@
         // Title and Data UI handler
         const titleElement = document.getElementById("titleLine");
         const dataElement = document.getElementById("dataLine");
-        let currentProperty = listOfKeyNames[rotatedViewIndex] || "battery_temperature";
+        let currentProperty = listOfKeyNames[rotatedViewIndex] || "battery_temperature";\
+        console.log({listOfKeyNames});
+        console.log({rotatedViewIndex})
         titleElement.innerText = formatTitle(currentProperty);
         dataElement.innerText = dummyData[currentProperty];
 
