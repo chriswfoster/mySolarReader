@@ -176,7 +176,7 @@ function getDateTime() {
     const time = now.toLocaleTimeString('en-US');
 
     // Combine date and time
-    const dateTime = `${date} ${time}`;
+    return `${date} ${time}`;
     console.log(dateTime); // Example: "12/4/2024 10:45:23 AM"
 }
 
