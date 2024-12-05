@@ -166,6 +166,20 @@ function originIsAllowed(origin) {
     return true;
 }
 
+function getDateTime() {
+    const now = new Date();
+
+    // Get the date in MM/DD/YYYY format
+    const date = now.toLocaleDateString('en-US');
+
+    // Get the time in HH:MM:SS AM/PM format
+    const time = now.toLocaleTimeString('en-US');
+
+    // Combine date and time
+    const dateTime = `${date} ${time}`;
+    console.log(dateTime); // Example: "12/4/2024 10:45:23 AM"
+}
+
 wsServer.on('request', function (request) {
     if (!originIsAllowed(request.origin)) {
         request.reject();
@@ -179,7 +193,9 @@ wsServer.on('request', function (request) {
     connection.on('message', function (message) {
         console.log("MESSAGE RECEIVEDz :|");
         if (message.type === 'utf8') {
+            
             solarData = JSON.parse(message.utf8Data);
+            solarData.shop_time = getDateTime();
             //connection.sendUTF(message.utf8Data); this resend the reseived message, instead of it i will send a custom message. hello from nodejs
             console.log({ solarData })
             //I dont think I need this
