@@ -118,8 +118,8 @@
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data = await response.json(); // Parse JSON from the response
+          listOfKeyNames = Object.keys(data);
 
-          console.log("Got data: ", data);
           dummyData = data
           updateUI();
         }
