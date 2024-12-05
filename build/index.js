@@ -105,7 +105,7 @@ app.use(express.static(__nccwpck_require__.ab + "public"));
 
 app.get('/', (req, res) => {
     console.log("Getting index.html file...");
-    res.sendFile(path.join(__dirname, 'public', 'index.html'), (err) => {
+    res.sendFile(__nccwpck_require__.ab + "index.html", (err) => {
         if (err) {
             res.status(500).send('File not found or cannot be sent.');
         }
