@@ -106,7 +106,7 @@ app.use(express.static(__nccwpck_require__.ab + "public"));
 var server = http.createServer(function (request, response) {
     console.log((new Date()) + ' Received request for ' + request.url);
     // response.writeHead(404);
-    response.end();
+    // response.end();
 });
 
 
@@ -115,8 +115,17 @@ wsServer = new WebSocketServer({
     autoAcceptConnections: false
 });
 
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'index.html'));
+// });
+
 app.get('/', (req, res) => {
-    res.sendFile(__nccwpck_require__.ab + "index.html");
+    console.log("Getting index.html file...");
+    res.sendFile(__nccwpck_require__.ab + "index.html", (err) => {
+        if (err) {
+            res.status(500).send('File not found or cannot be sent.');
+        }
+    });
 });
 
 app.get('/data', (req, res) => {
@@ -145,7 +154,7 @@ wsServer.on('request', function (request) {
         if (message.type === 'utf8') {
             solarData = JSON.parse(message.utf8Data);
             //connection.sendUTF(message.utf8Data); this resend the reseived message, instead of it i will send a custom message. hello from nodejs
-            console.log({solarData})
+            console.log({ solarData })
             //I dont think I need this
             // connection.sendUTF("Hello from node.js");
         }
