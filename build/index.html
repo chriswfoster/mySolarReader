@@ -109,10 +109,23 @@
 
       const refreshData = async () => {
         //TODO: might get rid of this later for sockets]
-        const data = await fetch('http://solarpi3:3000/data')
-        console.log("Got data: ", data);
-        dummyData = data
-        updateUI();
+        try {
+
+          const response = await fetch('http://solarpi3:3000/data')
+
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json(); // Parse JSON from the response
+
+          console.log("Got data: ", data);
+          dummyData = data
+          updateUI();
+        }
+        catch(e) {
+          console.log("ERROR GETTING DATA: ", data)
+        }
       };
 
       const updateUI = async () => {
