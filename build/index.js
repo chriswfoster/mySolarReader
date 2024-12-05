@@ -103,24 +103,39 @@ const app = express();
 app.use(cors())
 app.use(express.static(__nccwpck_require__.ab + "public"));
 
-var server = http.createServer(function (request, response) {
-    console.log((new Date()) + ' Received request for ' + request.url);
-    if (request.url === '/') {
-        const filePath = __nccwpck_require__.ab + "index.html";
-        fs.readFile(__nccwpck_require__.ab + "index.html", (err, data) => {
-            if (err) {
-                response.writeHead(500, { 'Content-Type': 'text/plain' });
-                response.end('Error loading file');
-            } else {
-                response.writeHead(200, { 'Content-Type': 'text/html' });
-                response.end(data); // End response after sending file content.
-            }
-        });
-    } else {
-        response.writeHead(404, { 'Content-Type': 'text/plain' });
-        response.end('Not Found');
-    }
+app.get('/', (req, res) => {
+    console.log("Getting index.html file...");
+    res.sendFile(path.join(__dirname, 'public', 'index.html'), (err) => {
+        if (err) {
+            res.status(500).send('File not found or cannot be sent.');
+        }
+    });
 });
+
+app.get('/data', (req, res) => {
+    res.status(200).send(solarData);
+});
+
+var server = http.createServer(
+//     function (request, response) {
+//     console.log((new Date()) + ' Received request for ' + request.url);
+//     if (request.url === '/') {
+//         const filePath = path.join(__dirname, 'index.html');
+//         fs.readFile(filePath, (err, data) => {
+//             if (err) {
+//                 response.writeHead(500, { 'Content-Type': 'text/plain' });
+//                 response.end('Error loading file');
+//             } else {
+//                 response.writeHead(200, { 'Content-Type': 'text/html' });
+//                 response.end(data); // End response after sending file content.
+//             }
+//         });
+//     } else {
+//         response.writeHead(404, { 'Content-Type': 'text/plain' });
+//         response.end('Not Found');
+//     }
+// }
+app);
 
 
 wsServer = new WebSocketServer({
@@ -132,18 +147,17 @@ wsServer = new WebSocketServer({
 //     res.sendFile(path.join(__dirname, 'index.html'));
 // });
 
-app.get('/', (req, res) => {
-    console.log("Getting index.html file...");
-    res.sendFile(__nccwpck_require__.ab + "index.html", (err) => {
-        if (err) {
-            res.status(500).send('File not found or cannot be sent.');
-        }
-    });
-});
+// app.get('/', (req, res) => {
+//     console.log("Getting index.html file...");
+//     res.sendFile(path.join(__dirname, 'index.html'), (err) => {
+//         if (err) {
+//             res.status(500).send('File not found or cannot be sent.');
+//         }
+//     });
+// });
 
-app.get('/data', (req, res) => {
-    res.status(200).send(solarData);
-});
+// Serve index.html for root route
+
 
 let solarData = {};
 
