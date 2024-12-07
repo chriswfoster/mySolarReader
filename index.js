@@ -119,7 +119,8 @@ wsServer.on('request', function (request) {
                 charge_level: solarData.charge_level,
                 voltage: solarData.voltage,
                 solar_panel_amps: solarData.solar_panel_amps,
-                max_discharging_amps_today: solarData.max_discharging_amps_today
+                max_discharging_amps_today: solarData.max_discharging_amps_today,
+                shop_time: solarData.shop_time
             }, (a, b) => {
                 console.log({a});
                 console.log({b})
