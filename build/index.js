@@ -31082,13 +31082,13 @@ wsServer.on('request', function (request) {
             //I dont think I need this
             // connection.sendUTF("Hello from node.js");
             client.updateChannel(2778142, {
-                controller_temperature: solarData.controller_temperature,
-                battery_temperature: solarData.battery_temperature,
-                charge_level: solarData.charge_level,
-                voltage: solarData.voltage,
-                solar_panel_amps: solarData.solar_panel_amps,
-                max_discharging_amps_today: solarData.max_discharging_amps_today,
-                shop_time: solarData.shop_time
+                field1: solarData.controller_temperature,
+                field2: solarData.battery_temperature,
+                field3: solarData.charge_level,
+                field4: solarData.voltage,
+                field5: solarData.solar_panel_amps,
+                field6: solarData.max_discharging_amps_today,
+                // shop_time: solarData.shop_time
             }, (a, b) => {
                 console.log({a});
                 console.log({b})
