@@ -25272,6 +25272,14 @@ function _dispatchEvent(event) {
 
 /***/ }),
 
+/***/ 4419:
+/***/ ((module) => {
+
+module.exports = eval("require")("thingspeakclient");
+
+
+/***/ }),
+
 /***/ 852:
 /***/ ((module) => {
 
@@ -25555,6 +25563,9 @@ const http = __nccwpck_require__(3685);
 const express = __nccwpck_require__(9734);
 const fs = __nccwpck_require__(7147);
 const path = __nccwpck_require__(1017);
+const ThingSpeakClient = __nccwpck_require__(4419);
+const client = new ThingSpeakClient();
+client.attachChannel(2778142, { writeKey:'EN0UAL4OCJLAFZFI'}, callBack);
 
 const url = 'ws://192.168.4.1/ws';
 
@@ -25659,6 +25670,19 @@ wsServer.on('request', function (request) {
             console.log({ solarData })
             //I dont think I need this
             // connection.sendUTF("Hello from node.js");
+            client.updateChannel(2778142, {
+                controller_temperature: solarData.controller_temperature,
+                battery_temperature: solarData.battery_temperature,
+                charge_level: solarData.charge_level,
+                voltage: solarData.voltage,
+                solar_panel_amps: solarData.solar_panel_amps,
+                max_discharging_amps_today: solarData.max_discharging_amps_today
+            }, (a, b) => {
+                console.log({a});
+                console.log({b})
+            });
+
+            
         }
         else if (message.type === 'binary') {
             console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');

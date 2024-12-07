@@ -4,6 +4,9 @@ const http = require('http');
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const ThingSpeakClient = require('thingspeakclient');
+const client = new ThingSpeakClient();
+client.attachChannel(2778142, { writeKey:'EN0UAL4OCJLAFZFI'}, callBack);
 
 const url = 'ws://192.168.4.1/ws';
 
@@ -108,6 +111,19 @@ wsServer.on('request', function (request) {
             console.log({ solarData })
             //I dont think I need this
             // connection.sendUTF("Hello from node.js");
+            client.updateChannel(2778142, {
+                controller_temperature: solarData.controller_temperature,
+                battery_temperature: solarData.battery_temperature,
+                charge_level: solarData.charge_level,
+                voltage: solarData.voltage,
+                solar_panel_amps: solarData.solar_panel_amps,
+                max_discharging_amps_today: solarData.max_discharging_amps_today
+            }, (a, b) => {
+                console.log({a});
+                console.log({b})
+            });
+
+            
         }
         else if (message.type === 'binary') {
             console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
