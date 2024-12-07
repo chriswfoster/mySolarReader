@@ -6,7 +6,9 @@ const fs = require('fs');
 const path = require('path');
 const ThingSpeakClient = require('thingspeakclient');
 const client = new ThingSpeakClient();
-client.attachChannel(2778142, { writeKey:'EN0UAL4OCJLAFZFI'}, callBack);
+client.attachChannel(2778142, { writeKey:'EN0UAL4OCJLAFZFI'}, () => {
+
+});
 
 const url = 'ws://192.168.4.1/ws';
 

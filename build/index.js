@@ -30974,7 +30974,9 @@ const fs = __nccwpck_require__(7147);
 const path = __nccwpck_require__(1017);
 const ThingSpeakClient = __nccwpck_require__(3592);
 const client = new ThingSpeakClient();
-client.attachChannel(2778142, { writeKey:'EN0UAL4OCJLAFZFI'}, callBack);
+client.attachChannel(2778142, { writeKey:'EN0UAL4OCJLAFZFI'}, () => {
+
+});
 
 const url = 'ws://192.168.4.1/ws';
 
